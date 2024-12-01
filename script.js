@@ -1,3 +1,4 @@
+
 const canvas = document.getElementById("tetris");
 const context = canvas.getContext("2d");
 context.scale(30, 30);
@@ -115,7 +116,7 @@ function pieceRotate() {
         offset = -(offset + (offset > 0 ? 1 : -1));
         if (offset > player.piece[0].length) {
             rotate(player.piece, 1);
-            if (!collide(arena, player.piece, {x: player.pos.x + offset, y: player.pos.y})) {
+            if (collide(arena, player.piece, {x: player.pos.x + offset, y: player.pos.y})) {
                              player.pos.x = gx;
                 player.piece = og;
                 return
