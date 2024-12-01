@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="style.css"></link>
+    <title>Tetris</title>
+</head>
+
+<body>
+    <div class="game-content-container">
+        <div class = "left-bar">
+            <div class="stats">
+                <p id="Score">Score:</p>
+                <p id="Rows">Rows:</p>
+                <p id="Dropped">Dropped:</p>
+            </div>
+            <br>
+            <div class="stats">
+                <h3>Controls:</h3>
+                <p><strong>Move:</strong> ⬅️ ➡️ / A D</p>
+                <p><strong>Rotate:</strong> ⬆️ / W</p>
+                <p><strong>Soft Drop:</strong> ⬇️ / S</p>
+                <p><strong>Hard Drop:</strong> Spacebar</p>
+            </div>
+            
+        </div>
+        <div class="tetris">
+            <!-- 40x40 pieces -->
+            <canvas id="tetris" width="400" height="880"></canvas>
+          </div>
+    </div>
+
+</body>
+<script src="script.js" charset="utf-8"></script>
+</html>
+
+
+
+
+
