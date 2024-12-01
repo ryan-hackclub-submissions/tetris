@@ -1,11 +1,11 @@
 
 const canvas = document.getElementById("tetris");
 const context = canvas.getContext("2d");
-context.scale(40, 40);
-let arena = createMatrix(10, 22);
+context.scale(30, 30);
+let arena = createMatrix(10, 21);
 
 
-let gameField = createMatrix(10, 22);
+let gameField = createMatrix(10, 21);
 let player = {
     piece : null,
     pos: {x: 0, y: 0},
@@ -13,7 +13,7 @@ let player = {
     rows: 0,
     dropped: 0,
 }
-const pointsPerRow = [0, 100, 300, 500, 800];
+
 let piecesQueue = [];
 maybeQueueMorePieces();
 
@@ -28,18 +28,18 @@ function collide(arena, matrix, offset) {
     return false;
 }
 
-function arenaSweep() {
+const pointsPerRow = [0, 100, 300, 500, 800];
+
+function areaSweepClearRows() {
     let rowsSwept = 0;
-    outer_loop: for (let y = arena.length - 1; y > 0; y--) {
-        for (let x = 0; x < arena[y].length; x++) {
-            if (arena[y][x] === 0) {
-                continue outer_loop;
-            }
+
+    for (let y = arena.length - 1; y >= 0; y--) {
+        if (arena[y].every(cell => cell !== 0)) {
+            // Clear and shift the row
+            const row = arena.splice(y, 1)[0].fill(0);
+            arena.unshift(row);
+            rowsSwept++;
         }
-        const row = arena.splice(y, 1)[0].fill(0);
-        arena.unshift(row);
-        y++;
-        rowsSwept++;
     }
 
     player.score += pointsPerRow[rowsSwept];
@@ -127,7 +127,7 @@ function pieceMove(x_movement, y_movement) {
                 row.forEach((value, x) => {
                     if (value !== 0) {
                         if (y + player.pos.y < 4) {
-                            arena = createMatrix(10, 22)
+                            arena = createMatrix(10, 21)
                             player.piece = piecesQueue.pop();
                             player.pos = {x: 5, y: 0}
                             player.rows = 0;
@@ -142,11 +142,11 @@ function pieceMove(x_movement, y_movement) {
             });
             player.piece = piecesQueue.pop();
             player.pos = {x: 5, y: 0}
-            arenaSweep();
+            areaSweepClearRows();
             return true;
         }
     }
-    arenaSweep();
+    areaSweepClearRows();
     return false;
 }
 function pieceHardDrop() {
@@ -211,8 +211,9 @@ function getFuncByKey(event) {
     }
 }
 
-function drawMatrix(matrix, offset) {
-    let colorMap = ["#000",
+function drawGrid(matrix, offset) {
+    let colorMap = [
+        "#000",
         '#20B2AA',
         '#4169E1',
         '#FF8C00',
@@ -247,10 +248,10 @@ function update() {
     let shadow = player.piece.map(row => 
         row.map(value => value == 0 ? 0 : 9)
       );
-    drawMatrix(shadow, {x: player.pos.x, y: y - 1});
+      drawGrid(shadow, {x: player.pos.x, y: y - 1});
     
-    drawMatrix(arena, {x: 0, y: 0});
-    drawMatrix(player.piece, player.pos);
+    drawGrid(arena, {x: 0, y: 0});
+    drawGrid(player.piece, player.pos);
 
 
 
