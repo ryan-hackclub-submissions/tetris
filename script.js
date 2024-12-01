@@ -1,4 +1,3 @@
-
 const canvas = document.getElementById("tetris");
 const context = canvas.getContext("2d");
 context.scale(30, 30);
@@ -40,6 +39,7 @@ function areaSweepClearRows() {
             arena.unshift(row);
             rowsSwept++;
         }
+
     }
 
     player.score += pointsPerRow[rowsSwept];
@@ -72,13 +72,13 @@ function maybeQueueMorePieces() {
     let pieces = shuffle(["I","J","L","O","S","T","Z"]);
     // numbers for color
     let pieceToMatrix = {
-        "I": [[0,1,0,0],[0,1,0,0],[0,1,0,0],[0,1,0,0]],
-        "J": [[2,0,0],[2,2,2],[0,0,0]],
-        "L": [[0,0,3],[3,3,3],[0,0,0]],
-        "O": [[4,4],[4,4]],
-        "S": [[0,5,5],[5,5,0],[0,0,0]],
-        "T": [[0,7,0],[7,7,7],[0,0,0]],
-        "Z": [[8,8,0],[0,8,8],[0,0,0]]
+        "I": [ [0,1,0,0], [0,1,0,0], [0,1,0,0], [0,1,0,0] ],
+        "J": [ [2,0,0], [2,2,2], [0,0,0] ],
+        "L": [ [0,0,3], [3,3,3], [0,0,0] ],
+        "O": [ [4,4], [4,4] ],
+        "S": [ [0,5,5], [5,5,0], [0,0,0] ],
+        "T": [ [0,7,0], [7,7,7], [0,0,0] ],
+        "Z": [ [8,8,0], [0,8,8], [0,0,0] ]
     };
     let output = shuffle(pieces).map(i => pieceToMatrix[i])
     // be safe and leak a little
@@ -94,26 +94,38 @@ function createMatrix(width, height) {
     // https://stackoverflow.com/a/46792350
     return Array(height).fill().map(() => Array(width).fill(0));
 }
-// WHY WORK???? HOW?
+// yoinked part of this func from the internet
 function pieceRotate() {
+    let og = player.piece.map(row => 
+        row.map(value => value)
+      );
+    let gx = (player.pos.x + 1) - 1;
+
     rotate(player.piece, -1)
     let offset = 1;
+    let iter = 0;
     while (collide(arena, player.piece, player.pos)) {
-        offset = -(offset + (offset > 0 ? 1 : -1));
-        player.pos.x += offset;
-        if (offset > player.matrix[0].length) {
-            rotate(player.matrix, -dir);
-            player.pos.x = pos;
+        iter += 1;
+        if (iter > 100) {
+            player.piece = og;
+            player.pos.x = gx;
+            console.log(-44);
             return;
         }
-        // if (player.pos.x < 5) {
-        //     player.pos.x += 1;
-        // }
-        //  else {
-        //     player.pos.x -= 1;
-        // }
+        offset = -(offset + (offset > 0 ? 1 : -1));
+        if (offset > player.piece[0].length) {
+            rotate(player.piece, 1);
+            if (!collide(arena, player.piece, {x: player.pos.x + offset, y: player.pos.y})) {
+                             player.pos.x = gx;
+                player.piece = og;
+                return
+            }
+            return;
+        }
     }
 }
+// i think this works
+// update: this so so unreable idk why it works
 function pieceMove(x_movement, y_movement) {
     player.pos.x += x_movement;
     player.pos.y -= y_movement;
@@ -148,6 +160,7 @@ function pieceMove(x_movement, y_movement) {
     }
     areaSweepClearRows();
     return false;
+    // only `pieceHardDrop` cares about return value
 }
 function pieceHardDrop() {
     while (pieceMove(0, -1) != true)  {
@@ -162,6 +175,7 @@ function changeScores() {
     set("Dropped", player.dropped)
 
 }
+// FUCK U JS WHY CANT THIS BE EASY
 let timeoutIds = {};
 let intervalIds = {};
 let allControls = ["ArrowLeft", "a", "A","ArrowRight", "d", "D","ArrowDown", "s", "S","ArrowUp", "w", "W","Enter", "Space", " "]
@@ -172,7 +186,6 @@ document.addEventListener('keydown', function(event) {
         let func = getFuncByKey(event);
         func();
   
-        
         timeoutIds[event.key] = setTimeout(function() {
           // Repeat every
           intervalIds[event.key] = setInterval(func, 75);
@@ -180,6 +193,7 @@ document.addEventListener('keydown', function(event) {
         }, 165);
       }
     }
+
   });
   
   document.addEventListener('keyup', function(event) {
@@ -195,7 +209,8 @@ document.addEventListener('keydown', function(event) {
       }
     }
   });
-
+// END OF JS RANT
+// The rest is on me not js
 
 function getFuncByKey(event) {
     if (["ArrowLeft", "a", "A"].includes(event.key)) {
@@ -254,12 +269,9 @@ function update() {
     drawGrid(player.piece, player.pos);
 
 
-
     maybeQueueMorePieces();
     // console.log("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\");
     requestAnimationFrame(update);
     changeScores();
 }
-
 update()
-
