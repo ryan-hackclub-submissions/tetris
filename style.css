@@ -1,7 +1,7 @@
 body {
     margin: 0;
     font-family: 'Poppins', sans-serif;
-    background: linear-gradient(135deg, #1e3c72, #2a5298); /* Nice gradient */
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
     color: white;
     display: flex;
     justify-content: center;
@@ -30,18 +30,7 @@ body {
     font-size: 1.2rem;
 }
 
-.stats p {
-    margin: 10px 0;
-    font-weight: 600;
-}
-
-.stats span {
-    color: #f5c518;
-    font-weight: bold;
-}
-
-
-.tetris {
+#tetris {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -52,4 +41,9 @@ body {
 
 canvas {
     display: block;
+}
+
+canvas {
+    width: 10px;
+    backgroud: blue,
 }
