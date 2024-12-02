@@ -189,9 +189,9 @@ document.addEventListener('keydown', function(event) {
   
         timeoutIds[event.key] = setTimeout(function() {
           // Repeat every
-          intervalIds[event.key] = setInterval(func, 75);
+          intervalIds[event.key] = setInterval(func, 70);
           // initial delay
-        }, 165);
+        }, 150);
       }
     }
 
